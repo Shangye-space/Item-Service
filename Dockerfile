@@ -1,9 +1,7 @@
-FROM golang:1.11 as builder
+FROM golang:latest
 WORKDIR $GOPATH/src/github.com/Shangye-space/Item-Service
 COPY ./ .
+RUN apt-get update
+RUN go get "github.com/gorilla/mux"
 RUN GOOS=linux GOARCH=386 go build -ldflags="-w -s" -v
 RUN cp Item-Service /
-
-FROM alpine:latest
-COPY --from=builder /Item-Service /
-CMD ["/Item-Service"]

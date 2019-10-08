@@ -27,7 +27,7 @@ services:
     ports:
         - "8080:8080"
     volumes: 
-        - .:/go/src/github.com/Shangye-space/Item-Service
+        - /go/src/github.com/Shangye-space/Item-Service
 
     expose:
       - '8080'
