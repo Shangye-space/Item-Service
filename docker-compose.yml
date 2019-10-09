@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 services:
   mysql:
     image: mysql:5.7
@@ -22,7 +22,7 @@ services:
       - my-db:/var/lib/mysql
 
   item-service:
-    image: golang:latest
+    image: golang:1.13
     build: .
     ports:
         - '8080:8080'
@@ -30,6 +30,7 @@ services:
         - .:/go/src/Item-Service
     expose:
       - '8080'
+    command: go run /go/src/Item-Service/main.go
     
 # Names our volume
 volumes:
