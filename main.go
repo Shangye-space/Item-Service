@@ -5,19 +5,30 @@ import (
 	"log"
 	"net/http"
 
+	db "github.com/Shangye-space/Item-Service/src/db"
+
 	"github.com/gorilla/mux"
 )
 
 func setupRouter(router *mux.Router) {
 	router.
 		Methods("GET").
-		Path("/").
+		Path("/status").
 		HandlerFunc(postFunction)
 }
 
 func postFunction(w http.ResponseWriter, r *http.Request) {
+	database, err := db.CreateDatabase()
+	if err != nil {
+		log.Fatal("Database connection failed")
+	}
+
+	_, err = database.Exec("INSERT INTO `test` (name) VALUES ('myname')")
+	if err != nil {
+		log.Fatal("Database INSERT failed")
+	}
 	log.Println("You called a thing!")
-	fmt.Fprintf(w, "Welcome to go Service!")
+	fmt.Println("Works Fine!")
 
 }
 

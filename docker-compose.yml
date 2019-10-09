@@ -21,18 +21,16 @@ services:
     volumes:
       - my-db:/var/lib/mysql
 
-  Item-Service:
-    image: golang:1.11
+  item-service:
+    image: golang:latest
     build: .
     ports:
-        - "8080:8080"
+        - '8080:8080'
     volumes: 
-        - /go/src/github.com/Shangye-space/Item-Service
-
+        - .:/go/src/Item-Service
     expose:
       - '8080'
     
-    command: go run /go/src/github.com/Shangye-space/Item-Service/main.go
 # Names our volume
 volumes:
   my-db:
