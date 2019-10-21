@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"database/sql"
@@ -8,15 +8,15 @@ import (
 )
 
 func CreateDatabase() (*sql.DB, error) {
-	serverName := "localhost:3306"
+	serverName := "192.168.45.100:3306"
 	user := "root"
 	password := "root"
 	dbName := "db"
 
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=true&multiStatements=true", user, password, serverName, dbName)
-	db, err := sql.Open("mysql", connectionString)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", user, password, serverName, dbName)
+	database, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		return nil, err
 	}
-	return db, nil
+	return database, nil
 }
