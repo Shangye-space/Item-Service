@@ -8,11 +8,12 @@ import (
 )
 
 func CreateDatabase() (*sql.DB, error) {
+	host := "host.docker.internal"
 	user := "root"
 	password := "root"
 	dbName := "db"
 
-	connectionString := fmt.Sprintf("%s:%s@tcp(docker.for.mac.localhost:3308)/%s?parseTime=true", user, password, dbName)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:3308)/%s?parseTime=true", user, password, host, dbName)
 	database, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		return nil, err
