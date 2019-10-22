@@ -1,4 +1,5 @@
 # Item-Service
+[![Coverage Status](https://coveralls.io/repos/github/Shangye-space/Item-Service/badge.svg?branch=master)](https://coveralls.io/github/Shangye-space/Item-Service?branch=master)
 
 ### Description
 This is one of microservices for "Shangye.space" project. 
