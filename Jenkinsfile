@@ -5,6 +5,7 @@ pipeline {
       steps {
         script {
             def root = tool name: 'Go', type: 'go'
+            def docker = tool name: 'Docker'
 
             withEnv(["GOPATH=${env.WORKSPACE}/go", "GOROOT=${root}", "GOBIN=${root}/bin", "PATH+GO=${root}/bin"]) {
             sh "mkdir -p ${env.WORKSPACE}/go/src"
