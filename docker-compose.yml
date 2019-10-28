@@ -27,11 +27,11 @@ services:
     build: .
     network_mode: bridge
     ports:
-        - '8080:8080'
+        - '3348:3348'
     volumes: 
         - .:/go/src/Item-Service
     expose:
-      - '8080'
+      - '3348'
     command: go run /go/src/Item-Service/main.go
     
 # Names our volume
