@@ -1,11 +1,11 @@
-package items
+package item_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	items "github.com/Shangye-space/Item-Service/src/api/Items"
+	"github.com/Shangye-space/Item-Service/src/api/item"
 )
 
 func TestGet(t *testing.T) {
@@ -18,7 +18,7 @@ func TestGet(t *testing.T) {
 
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(items.Get)
+	handler := http.HandlerFunc(item.Get)
 
 	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
 	// directly and pass in our Request and ResponseRecorder.
