@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"strconv"
 
@@ -56,8 +57,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
+	// saves time of last update operation in db
+	lastUpdated := fmt.Sprintf(`last_updated = "%v"`, time.Now().Format("2006-01-02 15:04:05"))
+	setProp = append(setProp, lastUpdated)
+
 	query := string(fmt.Sprintf("UPDATE item SET %v WHERE item_id = %v;", strings.Join(setProp, ", "), strconv.Itoa(itemID)))
-	fmt.Println(query)
 	db.Exec(query)
 
 	w.WriteHeader(http.StatusOK)
