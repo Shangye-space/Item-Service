@@ -8,6 +8,7 @@ import (
 	"github.com/Shangye-space/Item-Service/src/api/item"
 )
 
+// Testing item get method
 func TestGet(t *testing.T) {
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.

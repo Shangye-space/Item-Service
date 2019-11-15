@@ -9,12 +9,13 @@ import (
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
+//Create - creates categories in db
 func Create(w http.ResponseWriter, r *http.Request) {
 	db, err := database.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-	
+
 	var category models.Category
 
 	decoder := json.NewDecoder(r.Body)
@@ -30,7 +31,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	query := fmt.Sprintf(`
 	INSERT INTO category(category_name)
-	VALUES(%v);`, *category.CategoryName)
+	VALUES("%v");`, *category.CategoryName)
 
 	db.Exec(query)
 
