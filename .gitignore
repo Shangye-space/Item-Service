@@ -236,5 +236,7 @@ _Pvt_Extensions
 
 /.idea/
 
-/coverage/!cover.out
+coverage/*
+!coverage/coverage.sh
+
 
