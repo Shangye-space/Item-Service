@@ -29,9 +29,9 @@ func main() {
 
 	/* Sub Categories */
 	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
-	r.HandleFunc("/api/sub_categories/create", subCategory.Create).Methods("POST")
-	r.HandleFunc("/api/sub_categories/update/{id}", subCategory.Update).Methods("POST")
-	r.HandleFunc("/api/sub_categories/delete/{id}", subCategory.Delete).Methods("GET")
+	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
+	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
+	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
 	log.Fatal(http.ListenAndServe(":3348", r))
 
 }
