@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// CreateDatabase - creates db connection
 func CreateDatabase() (*sql.DB, error) {
 	host := "host.docker.internal"
 	user := "root"

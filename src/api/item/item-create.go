@@ -26,8 +26,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err1.Error(), http.StatusBadRequest)
 	}
 
-	if item.ItemName == nil || len(*item.ItemName) <= 0 {
-		http.Error(w, "ItemName is wrong", http.StatusBadRequest)
+	if item.Name == nil || len(*item.Name) <= 0 {
+		http.Error(w, "Name is wrong", http.StatusBadRequest)
 	}
 
 	var inSale int
@@ -46,8 +46,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := fmt.Sprintf(`
-	INSERT INTO item(sub_category_id, item_name, in_sale)
-	VALUES(%v, "%v", %v);`, *item.SubCategoryID, *item.ItemName, inSale)
+	INSERT INTO item(sub_category_id, name, in_sale)
+	VALUES(%v, "%v", %v);`, *item.SubCategoryID, *item.Name, inSale)
 
 	db.Exec(query)
 
