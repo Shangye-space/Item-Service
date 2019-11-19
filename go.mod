@@ -8,4 +8,5 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/johan-lejdung/go-microservice-api-guide v0.0.0-20181123132308-5eb40dfd400d
 	golang.org/x/tools v0.0.0-20191028173913-b394bd8bba1d // indirect
+	google.golang.org/appengine v1.6.5 // indirect
 )

@@ -1,7 +1,12 @@
 package models
 
+import "time"
+
 // Category ...DB -> Category Schema
 type Category struct {
-	CategoryID   *int
-	CategoryName *string
+	ID          *int
+	Name        *string
+	AddedTime   *time.Time
+	LastUpdated *time.Time
+	RemovedTime *time.Time
 }
