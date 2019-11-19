@@ -25,7 +25,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	query := fmt.Sprintf("DELETE FROM item WHERE item_id = %v;", strconv.Itoa(itemID))
+	query := fmt.Sprintf("DELETE FROM item WHERE id = %v;", strconv.Itoa(itemID))
 
 	db.Exec(query)
 	w.WriteHeader(http.StatusOK)

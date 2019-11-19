@@ -37,8 +37,8 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	var setProp []string
 
-	if item.ItemName != nil && len(*item.ItemName) > 0 {
-		prop := fmt.Sprintf(`item_name = "%v"`, *item.ItemName)
+	if item.Name != nil && len(*item.Name) > 0 {
+		prop := fmt.Sprintf(`name = "%v"`, *item.Name)
 		setProp = append(setProp, prop)
 	}
 
@@ -61,7 +61,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	lastUpdated := fmt.Sprintf(`last_updated = "%v"`, time.Now().Format("2006-01-02 15:04:05"))
 	setProp = append(setProp, lastUpdated)
 
-	query := string(fmt.Sprintf("UPDATE item SET %v WHERE item_id = %v;", strings.Join(setProp, ", "), strconv.Itoa(itemID)))
+	query := string(fmt.Sprintf("UPDATE item SET %v WHERE id = %v;", strings.Join(setProp, ", "), strconv.Itoa(itemID)))
 	db.Exec(query)
 
 	w.WriteHeader(http.StatusOK)
