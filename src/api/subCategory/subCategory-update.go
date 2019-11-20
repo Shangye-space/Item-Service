@@ -51,7 +51,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	lastUpdated := fmt.Sprintf(`last_updated = "%v"`, time.Now().Format("2006-01-02 15:04:05"))
 	setProp = append(setProp, lastUpdated)
 
-	query := string(fmt.Sprintf("UPDATE sub_category SET %v WHERE category_id = %v;", strings.Join(setProp, ", "), subCategoryID))
+	query := string(fmt.Sprintf("UPDATE sub_category SET %v WHERE id = %v;", strings.Join(setProp, ", "), subCategoryID))
 	fmt.Println(query)
 	db.Exec(query)
 
