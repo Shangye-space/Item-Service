@@ -6,6 +6,7 @@ import (
 
 	category "github.com/Shangye-space/Item-Service/src/api/category"
 	item "github.com/Shangye-space/Item-Service/src/api/item"
+	subCategory "github.com/Shangye-space/Item-Service/src/api/subCategory"
 
 	"github.com/gorilla/mux"
 )
@@ -26,6 +27,11 @@ func main() {
 	r.HandleFunc("/api/category/update/{id}", category.Update).Methods("POST")
 	r.HandleFunc("/api/category/delete/{id}", category.Delete).Methods("GET")
 
+	/* Sub Categories */
+	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
+	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
+	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
+	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
 	log.Fatal(http.ListenAndServe(":3348", r))
 
 }
