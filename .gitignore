@@ -238,5 +238,6 @@ _Pvt_Extensions
 
 coverage/*
 !coverage/coverage.sh
+!coverage/coverage.bat
 
 

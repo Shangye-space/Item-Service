@@ -1,0 +1,2 @@
+docker exec -d item-service_item-service_1 /bin/bash -c "go test ./... -coverprofile ./coverage/cover.out"
+docker exec item-service_item-service_1 /bin/bash -c "go tool cover -func ./coverage/cover.out | grep total:"
