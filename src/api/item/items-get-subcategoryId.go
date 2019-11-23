@@ -2,24 +2,36 @@ package item
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/Shangye-space/Item-Service/src/models"
+	"github.com/gorilla/mux"
 
 	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
-// Get - Gets Items
-func Get(w http.ResponseWriter, r *http.Request) {
+// GetBySubCategoryID - Gets Item by SubCategory ID
+func GetBySubCategoryID(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	subcategoryID, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else if subcategoryID == 0 {
+		http.Error(w, "can't be 0", http.StatusBadRequest)
+	}
 
 	db, err := database.CreateDatabase()
 	if err != nil {
 		log.Fatal("Connection to DB has failed.")
 	}
 
-	result, err := db.Query(`
-	SELECT * FROM item`)
+	fmt.Println(subcategoryID)
+	query := string(fmt.Sprintf("SELECT * FROM item WHERE sub_category_id = %v", strconv.Itoa(subcategoryID)))
+	result, err := db.Query(query)
 
 	if err != nil {
 		panic(err.Error())
