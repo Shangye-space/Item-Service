@@ -6,6 +6,7 @@ import (
 
 	category "github.com/Shangye-space/Item-Service/src/api/category"
 	item "github.com/Shangye-space/Item-Service/src/api/item"
+	iteminfo "github.com/Shangye-space/Item-Service/src/api/itemInfo"
 	subCategory "github.com/Shangye-space/Item-Service/src/api/subCategory"
 
 	"github.com/gorilla/mux"
@@ -15,11 +16,18 @@ func main() {
 
 	r := mux.NewRouter().StrictSlash(true)
 
+	/* Items */
 	http.Handle("/", r)
 	r.HandleFunc("/api/items", item.Get).Methods("GET")
 	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
 	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")
 	r.HandleFunc("/api/item/delete/{id}", item.Delete).Methods("GET")
+
+	/* Item info */
+	r.HandleFunc("/api/item_info/{id}", iteminfo.GetByID).Methods("GET")
+	r.HandleFunc("/api/item_info/create/{id}", iteminfo.CreateByID).Methods("POST")
+	r.HandleFunc("/api/item_info/update/{id}", iteminfo.UpdateByID).Methods("POST")
+	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByID).Methods("GET")
 
 	/* Categories */
 	r.HandleFunc("/api/categories", category.Get).Methods("GET")
