@@ -32,6 +32,7 @@ func main() {
 
 	/* Sub Categories */
 	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
+	r.HandleFunc("/api/sub_categories/category/{id}", subCategory.GetSubCategoryIDByCategoryID).Methods("GET")
 	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
 	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
 	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
