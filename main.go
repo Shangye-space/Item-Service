@@ -19,6 +19,9 @@ func main() {
 	/* Items */
 	http.Handle("/", r)
 	r.HandleFunc("/api/items", item.Get).Methods("GET")
+	r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryID).Methods("GET")
+	r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
+	r.HandleFunc("/api/item/{id}", item.GetByID).Methods("GET")
 	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
 	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")
 	r.HandleFunc("/api/item/delete/{id}", item.Delete).Methods("GET")
@@ -37,6 +40,7 @@ func main() {
 
 	/* Sub Categories */
 	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
+	r.HandleFunc("/api/sub_categories/category/{id}", subCategory.GetSubCategoryIDByCategoryID).Methods("GET")
 	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
 	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
 	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
