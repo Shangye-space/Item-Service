@@ -44,10 +44,6 @@ func CreateByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Description is wrong", http.StatusBadRequest)
 	}
 
-	if iteminfo.Price == nil || *iteminfo.Price <= 0 {
-		http.Error(w, "Price is wrong", http.StatusBadRequest)
-	}
-
 	if iteminfo.Discount == nil || *iteminfo.Discount <= 0 {
 		http.Error(w, "Discount is wrong", http.StatusBadRequest)
 	}
@@ -72,8 +68,8 @@ func CreateByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Material is wrong", http.StatusBadRequest)
 	}
 
-	query := fmt.Sprintf(`INSERT INTO item_info (item_id, quantity, description, price, discount, size, color, manufacturer, item_code, material) 
-	VALUES(%v, %v, "%v", %v, %v, "%v", "%v", "%v", "%v", "%v")`, itemID, *iteminfo.Quantity, *iteminfo.Description, *iteminfo.Price,
+	query := fmt.Sprintf(`INSERT INTO item_info (item_id, quantity, description, discount, size, color, manufacturer, item_code, material) 
+	VALUES(%v, %v, "%v", %v, "%v", "%v", "%v", "%v", "%v")`, itemID, *iteminfo.Quantity, *iteminfo.Description,
 		*iteminfo.Discount, *iteminfo.Size, *iteminfo.Color, *iteminfo.Manufacturer, *iteminfo.ItemCode, *iteminfo.Material)
 	fmt.Printf(query)
 	db.Exec(query)

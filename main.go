@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	category "github.com/Shangye-space/Item-Service/src/api/category"
+	image "github.com/Shangye-space/Item-Service/src/api/image"
 	item "github.com/Shangye-space/Item-Service/src/api/item"
 	iteminfo "github.com/Shangye-space/Item-Service/src/api/itemInfo"
 	subCategory "github.com/Shangye-space/Item-Service/src/api/subCategory"
@@ -20,7 +21,7 @@ func main() {
 	http.Handle("/", r)
 	r.HandleFunc("/api/items", item.Get).Methods("GET")
 	r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryID).Methods("GET")
-	r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
+	//r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
 	r.HandleFunc("/api/item/{id}", item.GetByID).Methods("GET")
 	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
 	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")
@@ -31,6 +32,12 @@ func main() {
 	r.HandleFunc("/api/item_info/create/{id}", iteminfo.CreateByID).Methods("POST")
 	r.HandleFunc("/api/item_info/update/{id}", iteminfo.UpdateByID).Methods("POST")
 	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByID).Methods("GET")
+
+	/* Image */
+	//r.HandleFunc("/api/image/{id}", image.Get).Methods("GET")
+	r.HandleFunc("/api/image/upload", image.Create).Methods("POST")
+	//r.HandleFunc("/api/image/update/{id}", image.Update).Methods("POST")
+	//r.HandleFunc("/api/image/delete/{id}", image.Delete).Methods("GET")
 
 	/* Categories */
 	r.HandleFunc("/api/categories", category.Get).Methods("GET")

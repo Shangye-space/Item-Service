@@ -1,4 +1,4 @@
-package item
+package image
 
 import (
 	"encoding/json"
@@ -13,14 +13,14 @@ import (
 	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
-// GetBySubCategoryID - Gets Item by SubCategory ID
-func GetBySubCategoryID(w http.ResponseWriter, r *http.Request) {
+// GetByID - Gets images by itemID
+func GetByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
-	subcategoryID, err := strconv.Atoi(params["id"])
+	itemID, err := strconv.Atoi(params["id"])
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if subcategoryID == 0 {
+	} else if itemID == 0 {
 		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
@@ -29,28 +29,30 @@ func GetBySubCategoryID(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Connection to DB has failed.")
 	}
 
-	fmt.Println(subcategoryID)
-	query := string(fmt.Sprintf("SELECT * FROM item WHERE sub_category_id = %v", strconv.Itoa(subcategoryID)))
+	fmt.Println(itemID)
+	query := string(fmt.Sprintf("SELECT * FROM image WHERE item_id = %v", strconv.Itoa(itemID)))
 	result, err := db.Query(query)
+
+	fmt.Println(result)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var item models.Item
-	var items []models.Item
+	var image models.Image
+	var images []models.Image
 
 	for result.Next() {
-		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
+		err := result.Scan()
 		if err != nil {
 			panic(err.Error())
 		}
-		items = append(items, item)
+		images = append(images, image)
 	}
 
 	defer result.Close()
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(items)
+	json.NewEncoder(w).Encode(images)
 }

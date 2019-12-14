@@ -4,7 +4,9 @@
 FROM golang:1.13
 
 # Set the Current Working Directory inside the container
+
 WORKDIR /go/src/Item-Service
+RUN mkdir ../assets
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./

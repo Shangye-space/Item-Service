@@ -46,11 +46,6 @@ func UpdateByID(w http.ResponseWriter, r *http.Request) {
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Price != nil && *iteminfo.Price > 0 {
-		prop := fmt.Sprintf(`price = %v`, *iteminfo.Price)
-		setProp = append(setProp, prop)
-	}
-
 	if iteminfo.Discount != nil && *iteminfo.Discount > 0 {
 		prop := fmt.Sprintf(`discount = %v`, *iteminfo.Discount)
 		setProp = append(setProp, prop)

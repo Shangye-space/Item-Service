@@ -28,7 +28,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	var items []models.Item
 
 	for result.Next() {
-		err := result.Scan(&item.ID, &item.Name, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
+		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
 		if err != nil {
 			panic(err.Error())
 		}
