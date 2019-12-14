@@ -1,20 +1,19 @@
-package item
+package category
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
+	database "github.com/Shangye-space/Item-Service/src/db"
 	"github.com/Shangye-space/Item-Service/src/models"
 	"github.com/gorilla/mux"
-
-	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
-// GetByID - Gets Item by ID
+// GetByID - Gets Category by ID
 func GetByID(w http.ResponseWriter, r *http.Request) {
+
 	params := mux.Vars(r)
 
 	itemID, err := strconv.Atoi(params["id"])
@@ -26,33 +25,30 @@ func GetByID(w http.ResponseWriter, r *http.Request) {
 
 	db, err := database.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed.")
+		log.Fatal("Connection to DB has failed")
 	}
 
-	fmt.Println(itemID)
-	query := string(fmt.Sprintf("SELECT * FROM item WHERE id = %v LIMIT 1", strconv.Itoa(itemID)))
-	result, err := db.Query(query)
-
-	fmt.Println(result)
+	result, err := db.Query(`SELECT * FROM category WHERE id = %v LIMIT 1`)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var item models.Item
-	var items []models.Item
+	var category models.Category
+	var categories []models.Category
 
 	for result.Next() {
-		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
+		err := result.Scan(&category.ID, &category.Name, &category.AddedTime, &category.LastUpdated, &category.RemovedTime)
 		if err != nil {
 			panic(err.Error())
 		}
-		items = append(items, item)
+		categories = append(categories, category)
 	}
 
 	defer result.Close()
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(items)
+	json.NewEncoder(w).Encode(categories)
+
 }

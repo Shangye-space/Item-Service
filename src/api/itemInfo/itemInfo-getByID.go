@@ -43,7 +43,6 @@ func GetByID(w http.ResponseWriter, r *http.Request) {
 		err := result.Scan(&itemInfo.ItemID,
 			&itemInfo.Quantity,
 			&itemInfo.Description,
-			&itemInfo.Price,
 			&itemInfo.Discount,
 			&itemInfo.Size,
 			&itemInfo.Color,

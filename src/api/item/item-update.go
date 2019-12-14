@@ -42,6 +42,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		setProp = append(setProp, prop)
 	}
 
+	if item.Price != nil && *item.Price > 0 {
+		prop := fmt.Sprintf(`price = %v`, *item.Price)
+		setProp = append(setProp, prop)
+	}
+
 	if item.InSale != nil {
 		var prop string
 		if *item.InSale == false {
