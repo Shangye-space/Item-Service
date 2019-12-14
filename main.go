@@ -20,8 +20,8 @@ func main() {
 	/* Items */
 	http.Handle("/", r)
 	r.HandleFunc("/api/items", item.Get).Methods("GET")
-	//r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryID).Methods("GET")
-	r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
+	r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryID).Methods("GET")
+	//r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
 	r.HandleFunc("/api/item/{id}", item.GetByID).Methods("GET")
 	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
 	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")

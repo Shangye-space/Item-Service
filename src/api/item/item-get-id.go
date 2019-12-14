@@ -29,11 +29,8 @@ func GetByID(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Connection to DB has failed.")
 	}
 
-	fmt.Println(itemID)
 	query := string(fmt.Sprintf("SELECT * FROM item WHERE id = %v LIMIT 1", strconv.Itoa(itemID)))
 	result, err := db.Query(query)
-
-	fmt.Println(result)
 
 	if err != nil {
 		panic(err.Error())

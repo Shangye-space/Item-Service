@@ -50,8 +50,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := fmt.Sprintf(`
-	INSERT INTO item(sub_category_id, name, price, in_sale)
-	VALUES(%v, "%v", %v, %v);`, *item.SubCategoryID, *item.Name, *item.Price, inSale)
+	INSERT INTO item(name, price, sub_category_id, in_sale)
+	VALUES("%v", %v, %v, %v);`, *item.Name, *item.Price, *item.SubCategoryID, inSale)
+
+	fmt.Println(query)
 
 	db.Exec(query)
 

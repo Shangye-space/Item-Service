@@ -57,6 +57,13 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		setProp = append(setProp, prop)
 	}
 
+	if item.SubCategoryID != nil && *item.SubCategoryID > 0 {
+		prop := fmt.Sprintf(`sub_category_id = %v`, *item.SubCategoryID)
+		setProp = append(setProp, prop)
+	}
+
+
+
 	db, err := database.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
