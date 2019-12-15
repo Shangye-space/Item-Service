@@ -21,17 +21,28 @@ func CreateDatabase() (*sql.DB, error) {
 	return db, err
 }
 
-//CheckID - check whether id is valid
+//CheckID - checks whether id is valid
 func CheckID(r *http.Request) (int, error) {
 	params := mux.Vars(r)
-	itemID, err := strconv.Atoi(params["id"])
+	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		fmt.Println("Error occured while converting itemID to int")
-	} else if itemID <= 0 {
+		fmt.Println("Error occured while converting ID to int")
+	} else if id <= 0 {
 		fmt.Println("can't be 0")
-		err = errors.New("ItemID can't be negative or 0")
+		err = errors.New("ID can't be negative or 0")
 	}
-	return itemID, err
+	return id, err
+}
+
+//CheckBool - checks
+func CheckBool(boolToCheck bool) int{
+	var num int
+	if boolToCheck == true {
+		num = 1
+	} else {
+		num = 0
+	}
+	return num
 }
 
 //CheckString - check text

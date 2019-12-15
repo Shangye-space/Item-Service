@@ -26,6 +26,7 @@ func main() {
 	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
 	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")
 	r.HandleFunc("/api/item/delete/{id}", item.Delete).Methods("GET")
+	r.HandleFunc("/api/items/count", item.GetCountHandler).Methods("GET")
 
 	/* Item info */
 	r.HandleFunc("/api/item_info/{id}", iteminfo.GetByID).Methods("GET")
