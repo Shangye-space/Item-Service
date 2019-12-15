@@ -10,8 +10,17 @@ import (
 	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
+// GetHandler - Handles GET method for items
+func GetHandler(w http.ResponseWriter, r *http.Request) {
+
+	items := Get()
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(items)
+}
+
 // Get - Gets Items
-func Get(w http.ResponseWriter, r *http.Request) {
+func Get() []models.Item{
 
 	db, err := database.CreateDatabase()
 	if err != nil {
@@ -37,7 +46,5 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(items)
+	return items
 }

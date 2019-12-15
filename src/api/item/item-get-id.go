@@ -2,54 +2,55 @@ package item
 
 import (
 	"encoding/json"
+	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
+	helpers "github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
-
-	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
-// GetByID - Gets Item by ID
-func GetByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-
-	itemID, err := strconv.Atoi(params["id"])
+// GetByIDHandler - Handles get method for Item by ID
+func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
+	itemID, err := helpers.CheckID(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if itemID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+
+	var item models.Item
+	item = GetByID(itemID, db)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(item)
+}
+
+//GetByID - Gets unique item by ID
+func GetByID(itemID int, db *sql.DB) models.Item {
 
 	query := string(fmt.Sprintf("SELECT * FROM item WHERE id = %v LIMIT 1", strconv.Itoa(itemID)))
 	result, err := db.Query(query)
-
 	if err != nil {
 		panic(err.Error())
 	}
 
 	var item models.Item
-	var items []models.Item
 
 	for result.Next() {
 		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
 		if err != nil {
 			panic(err.Error())
 		}
-		items = append(items, item)
 	}
 
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(items)
+	return item
+
 }
