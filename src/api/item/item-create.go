@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	database "github.com/Shangye-space/Item-Service/src/db"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
@@ -21,17 +22,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 
-	err1 := decoder.Decode(&item)
-	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+	err = decoder.Decode(&item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if item.Name == nil || len(*item.Name) <= 0 {
-		http.Error(w, "Name is wrong", http.StatusBadRequest)
+	item.Name, err = helpers.CheckString(item.Name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if item.Price == nil || *item.Price <= 0 {
-		http.Error(w, "Price is wrong", http.StatusBadRequest)
+	item.Price, err = helpers.CheckNumber(item.Price)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	var inSale int

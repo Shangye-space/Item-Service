@@ -1,8 +1,8 @@
 package item
 
 import (
+	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/Shangye-space/Item-Service/src/models"
@@ -13,19 +13,19 @@ import (
 // GetHandler - Handles GET method for items
 func GetHandler(w http.ResponseWriter, r *http.Request) {
 
-	items := Get()
+	db, err := database.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	items := Get(db)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(items)
 }
 
 // Get - Gets Items
-func Get() []models.Item{
-
-	db, err := database.CreateDatabase()
-	if err != nil {
-		log.Fatal("Connection to DB has failed.")
-	}
+func Get(db *sql.DB) []models.Item {
 
 	result, err := db.Query(`SELECT * FROM item`)
 

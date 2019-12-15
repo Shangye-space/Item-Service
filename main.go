@@ -40,13 +40,15 @@ func main() {
 	//r.HandleFunc("/api/image/delete/{id}", image.Delete).Methods("GET")
 
 	/* Categories */
-	r.HandleFunc("/api/categories", category.Get).Methods("GET")
+	r.HandleFunc("/api/categories", category.GetHandler).Methods("GET")
+	r.HandleFunc("/api/category/{id}", category.GetByIDHandler).Methods("GET")
 	r.HandleFunc("/api/category/create", category.Create).Methods("POST")
 	r.HandleFunc("/api/category/update/{id}", category.Update).Methods("POST")
 	r.HandleFunc("/api/category/delete/{id}", category.Delete).Methods("GET")
 
 	/* Sub Categories */
 	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
+	r.HandleFunc("/api/sub_category/{id}", subCategory.GetByIDHandler).Methods("GET")
 	r.HandleFunc("/api/sub_categories/category/{id}", subCategory.GetSubCategoryIDByCategoryID).Methods("GET")
 	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
 	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")

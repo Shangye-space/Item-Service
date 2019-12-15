@@ -1,21 +1,32 @@
 package category
 
 import (
+	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
 
 	database "github.com/Shangye-space/Item-Service/src/db"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-// Get - Gets Categories
-func Get(w http.ResponseWriter, r *http.Request) {
+// GetHandler - Handles GET method for categories
+func GetHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := database.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+
+	categories := Get(db)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(categories)
+
+}
+
+// Get - Gets Categories
+func Get(db *sql.DB) []models.Category {
 
 	result, err := db.Query(`SELECT * FROM category`)
 
@@ -36,8 +47,6 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(categories)
+	return categories
 
 }

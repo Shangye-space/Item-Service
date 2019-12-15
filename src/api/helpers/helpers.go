@@ -33,3 +33,21 @@ func CheckID(r *http.Request) (int, error) {
 	}
 	return itemID, err
 }
+
+//CheckString - check text
+func CheckString(text *string) (*string, error) {
+	var err error
+	if text == nil || len(*text) <= 0 {
+		err = errors.New("There was a problem with text")
+	}
+	return text, err
+}
+
+//ChechNumber - check number
+func CheckNumber(number *float32) (*float32, error) {
+	var err error
+	if number == nil || *number <= 0 {
+		err = errors.New("There was a number with number")
+	}
+	return number, err
+}
