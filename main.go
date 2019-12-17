@@ -20,12 +20,12 @@ func main() {
 	/* Items */
 	http.Handle("/", r)
 	r.HandleFunc("/api/items", item.GetHandler).Methods("GET")
-	r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryID).Methods("GET")
-	//r.HandleFunc("/api/items/category/{id}", item.GetByCategoryID).Methods("GET")
+	r.HandleFunc("/api/items/sub_category/{id}", item.GetBySubCategoryIDHandler).Methods("GET")
+	r.HandleFunc("/api/items/category/{id}", item.GetByCategoryIDHandler).Methods("GET")
 	r.HandleFunc("/api/item/{id}", item.GetByIDHandler).Methods("GET")
-	r.HandleFunc("/api/item/create", item.Create).Methods("POST")
-	r.HandleFunc("/api/item/update/{id}", item.Update).Methods("POST")
-	r.HandleFunc("/api/item/delete/{id}", item.Delete).Methods("GET")
+	r.HandleFunc("/api/item/create", item.CreateHandler).Methods("POST")
+	r.HandleFunc("/api/item/update/{id}", item.UpdateHandler).Methods("POST")
+	r.HandleFunc("/api/item/delete/{id}", item.DeleteHandler).Methods("GET")
 	r.HandleFunc("/api/items/count", item.GetCountHandler).Methods("GET")
 
 	/* Item info */
@@ -54,6 +54,7 @@ func main() {
 	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
 	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
 	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":3348", r))
 
 }

@@ -13,7 +13,7 @@ import (
 
 // GetByIDHandler - Handles get method for Item by ID
 func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-	itemID, err := helpers.CheckID(r)
+	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -31,25 +31,14 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //GetByID - Gets unique item by ID
-func GetByID(itemID int, db *sql.DB) models.Item {
-
+func GetByID(itemID int, db *sql.DB) []models.Item {
 	query := string(fmt.Sprintf("SELECT * FROM item WHERE id = %v LIMIT 1", strconv.Itoa(itemID)))
 	result, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var item models.Item
-
-	for result.Next() {
-		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
+	items := helpers.ScanItems(result)
 	defer result.Close()
-
-	return item
-
+	return items
 }
