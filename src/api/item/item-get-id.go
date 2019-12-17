@@ -38,7 +38,7 @@ func GetByID(itemID int, db *sql.DB) []models.Item {
 		panic(err.Error())
 	}
 
-	items := helpers.ScanItems(result)
+	item := helpers.ScanItems(result)
 	defer result.Close()
-	return items
+	return item
 }

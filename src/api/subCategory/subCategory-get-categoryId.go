@@ -1,56 +1,49 @@
 package subcategory
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
-
-	database "github.com/Shangye-space/Item-Service/src/db"
 )
 
-// GetSubCategoryIDByCategoryID - Gets subcategory IDs by category ID
-func GetSubCategoryIDByCategoryID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+// GetSubCategoryByCategoryIDHandler - handles get method for subCategory by CategoryID
+func GetSubCategoryByCategoryIDHandler(w http.ResponseWriter, r *http.Request) {
 
-	categoryID, err := strconv.Atoi(params["id"])
+	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if categoryID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
 		log.Fatal("Connection to DB has failed.")
 	}
 
-	fmt.Println(categoryID)
-	query := string(fmt.Sprintf("SELECT id FROM sub_category WHERE category_id = %v", strconv.Itoa(categoryID)))
+	subCategory := GetSubCategoryIDByCategoryID(categoryID, db)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(subCategory)
+}
+
+// GetSubCategoryIDByCategoryID - Gets subcategory IDs by category ID
+func GetSubCategoryIDByCategoryID(categoryID int, db *sql.DB) []models.SubCategory {
+	query := string(fmt.Sprintf("SELECT * FROM sub_category WHERE category_id = %v", strconv.Itoa(categoryID)))
 	result, err := db.Query(query)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var subCategory models.SubCategory
-	var subCategories []models.SubCategory
-
-	for result.Next() {
-		err := result.Scan(&subCategory.ID)
-		if err != nil {
-			panic(err.Error())
-		}
-		subCategories = append(subCategories, subCategory)
-	}
-
+	subCategory := helpers.ScanSubCategories(result)
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(subCategories)
+	return subCategory
+
 }

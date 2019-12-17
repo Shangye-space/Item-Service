@@ -1,6 +1,7 @@
 package category
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,20 +10,16 @@ import (
 
 	"strconv"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	helpers "github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
 )
 
-//Update categories
-func Update(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
+//UpdateHandler categories
+func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 
-	categoryID, err := strconv.Atoi(params["id"])
+	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if categoryID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
 	//Declare a new Category struct.
@@ -37,24 +34,28 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	var setProp []string
 
-	if category.Name != nil && len(*category.Name) > 0 {
+	if helpers.CheckString(category.Name) == nil {
 		prop := fmt.Sprintf(`name = "%v"`, *category.Name)
 		setProp = append(setProp, prop)
-	}
-
-	db, err := database.CreateDatabase()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	lastUpdated := fmt.Sprintf(`last_updated = "%v"`, time.Now().Format("2006-01-02 15:04:05"))
 	setProp = append(setProp, lastUpdated)
 
-	query := string(fmt.Sprintf("UPDATE category SET %v WHERE id = %v;", strings.Join(setProp, ", "), strconv.Itoa(categoryID)))
-	fmt.Println(query)
-	db.Exec(query)
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	Update(categoryID, db, setProp)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 
+}
+
+//Update - updates category
+func Update(categoryID int, db *sql.DB, setProp []string) {
+	query := string(fmt.Sprintf("UPDATE category SET %v WHERE id = %v;", strings.Join(setProp, ", "), strconv.Itoa(categoryID)))
+	db.Exec(query)
 }

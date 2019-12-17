@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/Shangye-space/Item-Service/src/api/helpers"
-	database "github.com/Shangye-space/Item-Service/src/db"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
@@ -20,7 +19,7 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -34,22 +33,14 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //GetByID - Gets unique sub category by ID
-func GetByID(subCategoryID int, db *sql.DB) models.SubCategory {
+func GetByID(subCategoryID int, db *sql.DB) []models.SubCategory {
 	query := string(fmt.Sprintf("SELECT * FROM sub_category WHERE id = %v LIMIT 1", strconv.Itoa(subCategoryID)))
 	result, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var subCategory models.SubCategory
-
-	for result.Next() {
-		err := result.Scan(&subCategory.ID, &subCategory.Name, &subCategory.CategoryID, &subCategory.AddedTime, &subCategory.LastUpdated, &subCategory.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
+	subCategory := helpers.ScanSubCategories(result)
 	defer result.Close()
 
 	return subCategory

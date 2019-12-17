@@ -67,8 +67,17 @@ func CheckString(text *string) error {
 	return err
 }
 
-//CheckNumber - checks whether number is valid
+//CheckNumber - checks whether number (float) is valid
 func CheckNumber(number *float32) error {
+	var err error
+	if number == nil || *number <= 0 {
+		err = errors.New("There was a problem with number")
+	}
+	return err
+}
+
+//CheckNumberInt - checks whether number (int) is valid
+func CheckNumberInt(number *int) error {
 	var err error
 	if number == nil || *number <= 0 {
 		err = errors.New("There was a problem with number")
@@ -88,4 +97,63 @@ func ScanItems(result *sql.Rows) []models.Item {
 		items = append(items, item)
 	}
 	return items
+}
+
+//ScanCategories - scans result for categories
+func ScanCategories(result *sql.Rows) []models.Category {
+	var category models.Category
+	var categories []models.Category
+
+	for result.Next() {
+		err := result.Scan(&category.ID, &category.Name, &category.AddedTime, &category.LastUpdated, &category.RemovedTime)
+		if err != nil {
+			panic(err.Error())
+		}
+		categories = append(categories, category)
+	}
+
+	return categories
+}
+
+//ScanSubCategories - scans result for sub categories
+func ScanSubCategories(result *sql.Rows) []models.SubCategory {
+	var subCategory models.SubCategory
+	var subCategories []models.SubCategory
+
+	for result.Next() {
+		err := result.Scan(&subCategory.ID, &subCategory.Name, &subCategory.CategoryID, &subCategory.AddedTime, &subCategory.LastUpdated, &subCategory.RemovedTime)
+		if err != nil {
+			panic(err.Error())
+		}
+		subCategories = append(subCategories, subCategory)
+	}
+
+	return subCategories
+
+}
+
+func ScanItemInfo(result *sql.Rows) []models.ItemInfo {
+	var itemInfo models.ItemInfo
+	var itemInfos []models.ItemInfo
+
+	for result.Next() {
+		err := result.Scan(&itemInfo.ItemID,
+			&itemInfo.Quantity,
+			&itemInfo.Description,
+			&itemInfo.Discount,
+			&itemInfo.Size,
+			&itemInfo.Color,
+			&itemInfo.Manufacturer,
+			&itemInfo.ItemCode,
+			&itemInfo.Material,
+			&itemInfo.AddedTime,
+			&itemInfo.LastUpdated,
+			&itemInfo.RemovedTime)
+		if err != nil {
+			panic(err.Error())
+		}
+		itemInfos = append(itemInfos, itemInfo)
+	}
+
+	return itemInfos
 }

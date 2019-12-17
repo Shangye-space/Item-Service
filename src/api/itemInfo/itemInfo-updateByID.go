@@ -1,6 +1,7 @@
 package iteminfo
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,86 +9,87 @@ import (
 	"strings"
 	"time"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
 )
 
-// UpdateByID - updates item info by id
-func UpdateByID(w http.ResponseWriter, r *http.Request) {
+// UpdateByIDHandler - Handles item info update function
+func UpdateByIDHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	itemID, err := strconv.Atoi(params["id"])
+	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if itemID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
-	var iteminfo models.ItemInfo
-
+	var itemInfo models.ItemInfo
 	decoder := json.NewDecoder(r.Body)
 
-	err1 := decoder.Decode(&iteminfo)
+	err1 := decoder.Decode(&itemInfo)
 	if err1 != nil {
 		panic(err)
 	}
 
 	var setProp []string
 
-	if iteminfo.Quantity != nil && *iteminfo.Quantity > 0 {
-		prop := fmt.Sprintf(`quantity = %v`, *iteminfo.Quantity)
+	if helpers.CheckNumberInt(itemInfo.Quantity) == nil {
+		prop := fmt.Sprintf(`quantity = %v`, *itemInfo.Quantity)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Description != nil && len(*iteminfo.Description) > 0 {
-		prop := fmt.Sprintf(`description = "%v"`, *iteminfo.Description)
+	if helpers.CheckString(itemInfo.Description) == nil {
+		prop := fmt.Sprintf(`description = "%v"`, *itemInfo.Description)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Discount != nil && *iteminfo.Discount > 0 {
-		prop := fmt.Sprintf(`discount = %v`, *iteminfo.Discount)
+	if helpers.CheckNumber(itemInfo.Discount) == nil {
+		prop := fmt.Sprintf(`discount = %v`, *itemInfo.Discount)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Size != nil && len(*iteminfo.Size) > 0 {
-		prop := fmt.Sprintf(`size = "%v"`, *iteminfo.Size)
+	if helpers.CheckString(itemInfo.Size) == nil {
+		prop := fmt.Sprintf(`size = "%v"`, *itemInfo.Size)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Color != nil && len(*iteminfo.Color) > 0 {
-		prop := fmt.Sprintf(`color = "%v"`, *iteminfo.Color)
+	if helpers.CheckString(itemInfo.Color) == nil {
+		prop := fmt.Sprintf(`color = "%v"`, *itemInfo.Color)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Manufacturer != nil && len(*iteminfo.Manufacturer) > 0 {
-		prop := fmt.Sprintf(`manufacturer = "%v"`, *iteminfo.Manufacturer)
+	if helpers.CheckString(itemInfo.Manufacturer) == nil {
+		prop := fmt.Sprintf(`manufacturer = "%v"`, *itemInfo.Manufacturer)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.ItemCode != nil && len(*iteminfo.ItemCode) > 0 {
-		prop := fmt.Sprintf(`item_code = "%v"`, *iteminfo.ItemCode)
+	if helpers.CheckString(itemInfo.ItemCode) == nil {
+		prop := fmt.Sprintf(`item_code = "%v"`, *itemInfo.ItemCode)
 		setProp = append(setProp, prop)
 	}
 
-	if iteminfo.Material != nil && len(*iteminfo.Material) > 0 {
-		prop := fmt.Sprintf(`material = "%v"`, *iteminfo.Material)
+	if helpers.CheckString(itemInfo.Material) == nil {
+		prop := fmt.Sprintf(`material = "%v"`, *itemInfo.Material)
 		setProp = append(setProp, prop)
-	}
-
-	db, err := database.CreateDatabase()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	lastUpdated := fmt.Sprintf(`last_updated = "%v"`, time.Now().Format("2006-01-02 15:04:05"))
 	setProp = append(setProp, lastUpdated)
 
-	query := string(fmt.Sprintf("UPDATE item_info SET %v WHERE item_id = %v;", strings.Join(setProp, ", "), strconv.Itoa(itemID)))
-	db.Exec(query)
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	UpdateByID(&itemID, itemInfo.Quantity, itemInfo.Description, itemInfo.Discount, itemInfo.Size, itemInfo.Color, itemInfo.Manufacturer, itemInfo.ItemCode, itemInfo.Material, db, setProp)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+
+}
+
+//UpdateByID - updates item info by id
+func UpdateByID(itemID *int, Quantity *int, Description *string, Discount *float32, Size *string, Color *string, Manufacturer *string, ItemCode *string, Material *string, db *sql.DB, setProp []string) {
+
+	query := string(fmt.Sprintf("UPDATE item_info SET %v WHERE item_id = %v;", strings.Join(setProp, ", "), strconv.Itoa(*itemID)))
+	db.Exec(query)
 
 }
