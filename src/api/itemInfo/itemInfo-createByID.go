@@ -1,80 +1,85 @@
 package iteminfo
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"strconv"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
 )
 
-// CreateByID - creates item info in db by ID
-func CreateByID(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-
-	itemID, err := strconv.Atoi(params["id"])
+// CreateByIDHandler - handles creating item info
+func CreateByIDHandler(w http.ResponseWriter, r *http.Request) {
+	var itemInfo models.ItemInfo
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&itemInfo)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if itemID == 0 {
-		http.Error(w, "can't b 0", http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	ItemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
-		log.Fatal("Conection to DB has failed")
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	var iteminfo models.ItemInfo
-	decoder := json.NewDecoder(r.Body)
-
-	err1 := decoder.Decode(&iteminfo)
-	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+	err = helpers.CheckNumberInt(itemInfo.Quantity)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Quantity == nil || *iteminfo.Quantity <= 0 {
-		http.Error(w, "Quantity is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.Description)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Description == nil || len(*iteminfo.Description) <= 0 {
-		http.Error(w, "Description is wrong", http.StatusBadRequest)
+	err = helpers.CheckNumber(itemInfo.Discount)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Discount == nil || *iteminfo.Discount <= 0 {
-		http.Error(w, "Discount is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.Size)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Size == nil || len(*iteminfo.Size) <= 0 {
-		http.Error(w, "Size is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.Color)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Color == nil || len(*iteminfo.Color) <= 0 {
-		http.Error(w, "Color is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.Manufacturer)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Manufacturer == nil || len(*iteminfo.Manufacturer) <= 0 {
-		http.Error(w, "Manufacturer is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.ItemCode)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.ItemCode == nil || len(*iteminfo.ItemCode) <= 0 {
-		http.Error(w, "ItemCode is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(itemInfo.Material)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if iteminfo.Material == nil || len(*iteminfo.Material) <= 0 {
-		http.Error(w, "Material is wrong", http.StatusBadRequest)
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	query := fmt.Sprintf(`INSERT INTO item_info (item_id, quantity, description, discount, size, color, manufacturer, item_code, material) 
-	VALUES(%v, %v, "%v", %v, "%v", "%v", "%v", "%v", "%v")`, itemID, *iteminfo.Quantity, *iteminfo.Description,
-		*iteminfo.Discount, *iteminfo.Size, *iteminfo.Color, *iteminfo.Manufacturer, *iteminfo.ItemCode, *iteminfo.Material)
-	fmt.Printf(query)
-	db.Exec(query)
-
+	CreateByID(&ItemID, itemInfo.Quantity, itemInfo.Description, itemInfo.Discount, itemInfo.Size, itemInfo.Color, itemInfo.Manufacturer, itemInfo.ItemCode, itemInfo.Material, db)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+}
 
+// CreateByID - creates item info in db by ID
+func CreateByID(itemID *int, Quantity *int, Description *string, Discount *float32, Size *string, Color *string, Manufacturer *string, ItemCode *string, Material *string, db *sql.DB) {
+
+	query := fmt.Sprintf(`INSERT INTO item_info (item_id, quantity, description, discount, size, color, manufacturer, item_code, material) 
+	VALUES(%v, %v, "%v", %v, "%v", "%v", "%v", "%v", "%v")`, *itemID, *Quantity, *Description,
+		*Discount, *Size, *Color, *Manufacturer, *ItemCode, *Material)
+
+	db.Exec(query)
 }

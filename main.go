@@ -29,10 +29,10 @@ func main() {
 	r.HandleFunc("/api/items/count", item.GetCountHandler).Methods("GET")
 
 	/* Item info */
-	r.HandleFunc("/api/item_info/{id}", iteminfo.GetByID).Methods("GET")
-	r.HandleFunc("/api/item_info/create/{id}", iteminfo.CreateByID).Methods("POST")
-	r.HandleFunc("/api/item_info/update/{id}", iteminfo.UpdateByID).Methods("POST")
-	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByID).Methods("GET")
+	r.HandleFunc("/api/item_info/{id}", iteminfo.GetByIDHandler).Methods("GET")
+	r.HandleFunc("/api/item_info/create/{id}", iteminfo.CreateByIDHandler).Methods("POST")
+	r.HandleFunc("/api/item_info/update/{id}", iteminfo.UpdateByIDHandler).Methods("POST")
+	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByIDHandler).Methods("GET")
 
 	/* Image */
 	r.HandleFunc("/api/image/{id}", image.GetByIDHandler).Methods("GET")
@@ -47,17 +47,17 @@ func main() {
 	/* Categories */
 	r.HandleFunc("/api/categories", category.GetHandler).Methods("GET")
 	r.HandleFunc("/api/category/{id}", category.GetByIDHandler).Methods("GET")
-	r.HandleFunc("/api/category/create", category.Create).Methods("POST")
-	r.HandleFunc("/api/category/update/{id}", category.Update).Methods("POST")
-	r.HandleFunc("/api/category/delete/{id}", category.Delete).Methods("GET")
+	r.HandleFunc("/api/category/create", category.CreateHandler).Methods("POST")
+	r.HandleFunc("/api/category/update/{id}", category.UpdateHandler).Methods("POST")
+	r.HandleFunc("/api/category/delete/{id}", category.DeleteHandler).Methods("GET")
 
 	/* Sub Categories */
-	r.HandleFunc("/api/sub_categories", subCategory.Get).Methods("GET")
+	r.HandleFunc("/api/sub_categories", subCategory.GetHandler).Methods("GET")
 	r.HandleFunc("/api/sub_category/{id}", subCategory.GetByIDHandler).Methods("GET")
-	r.HandleFunc("/api/sub_categories/category/{id}", subCategory.GetSubCategoryIDByCategoryID).Methods("GET")
-	r.HandleFunc("/api/sub_category/create", subCategory.Create).Methods("POST")
-	r.HandleFunc("/api/sub_category/update/{id}", subCategory.Update).Methods("POST")
-	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
+	r.HandleFunc("/api/sub_categories/category/{id}", subCategory.GetSubCategoryByCategoryIDHandler).Methods("GET")
+	r.HandleFunc("/api/sub_category/create", subCategory.CreateHandler).Methods("POST")
+	r.HandleFunc("/api/sub_category/update/{id}", subCategory.UpdateHandler).Methods("POST")
+	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.DeleteHandler).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3348", r))
 }

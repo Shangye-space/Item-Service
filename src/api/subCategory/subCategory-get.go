@@ -1,43 +1,40 @@
 package subcategory
 
 import (
+	"database/sql"
 	"encoding/json"
-	"log"
 	"net/http"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-//Get - gets sub categories
-func Get(w http.ResponseWriter, r *http.Request) {
+// GetHandler - Handles GET method for sub categories
+func GetHandler(w http.ResponseWriter, r *http.Request) {
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	subCategories := Get(db)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(subCategories)
+
+}
+
+//Get - gets sub sub categories
+func Get(db *sql.DB) []models.SubCategory {
 	result, err := db.Query(`SELECT * FROM sub_category`)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var subCategory models.SubCategory
-	var subCategories []models.SubCategory
-
-	for result.Next() {
-		err := result.Scan(&subCategory.ID, &subCategory.Name, &subCategory.CategoryID, &subCategory.AddedTime, &subCategory.LastUpdated, &subCategory.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-		subCategories = append(subCategories, subCategory)
-	}
-
+	subCategories := helpers.ScanSubCategories(result)
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(subCategories)
-
+	return subCategories
 }

@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
 // GetHandler - Handles GET method for categories
 func GetHandler(w http.ResponseWriter, r *http.Request) {
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -29,22 +29,11 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 func Get(db *sql.DB) []models.Category {
 
 	result, err := db.Query(`SELECT * FROM category`)
-
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var category models.Category
-	var categories []models.Category
-
-	for result.Next() {
-		err := result.Scan(&category.ID, &category.Name, &category.AddedTime, &category.LastUpdated, &category.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-		categories = append(categories, category)
-	}
-
+	categories := helpers.ScanCategories(result)
 	defer result.Close()
 
 	return categories

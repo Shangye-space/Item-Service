@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	helpers "github.com/Shangye-space/Item-Service/src/api/helpers"
-	database "github.com/Shangye-space/Item-Service/src/db"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
@@ -20,7 +19,7 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -34,23 +33,14 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //GetByID - Gets unique category by ID
-func GetByID(categoryID int, db *sql.DB) models.Category {
+func GetByID(categoryID int, db *sql.DB) []models.Category {
 	query := string(fmt.Sprintf("SELECT * FROM category WHERE id = %v LIMIT 1", strconv.Itoa(categoryID)))
 	result, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var category models.Category
-
-	for result.Next() {
-		err := result.Scan(&category.ID, &category.Name, &category.AddedTime, &category.LastUpdated, &category.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-
-	}
-
+	category := helpers.ScanCategories(result)
 	defer result.Close()
 
 	return category
