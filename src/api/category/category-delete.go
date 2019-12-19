@@ -11,6 +11,7 @@ import (
 
 // DeleteHandler - Handles removing category from db
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

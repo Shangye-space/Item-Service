@@ -12,6 +12,7 @@ import (
 
 // CreateHandler - handles creating item
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	var item models.Item
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&item)
