@@ -35,10 +35,14 @@ func main() {
 	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByID).Methods("GET")
 
 	/* Image */
-	//r.HandleFunc("/api/image/{id}", image.Get).Methods("GET")
-	r.HandleFunc("/api/image/upload", image.Create).Methods("POST")
-	//r.HandleFunc("/api/image/update/{id}", image.Update).Methods("POST")
-	//r.HandleFunc("/api/image/delete/{id}", image.Delete).Methods("GET")
+	r.HandleFunc("/api/image/{id}", image.GetByIDHandler).Methods("GET")
+	//r.HandleFunc("/api/image/upload", image.UploadHandler).Methods("POST")
+	r.HandleFunc("/api/image/create/{id}", image.CreateHandler).Methods("POST")
+	r.HandleFunc("/api/image/update/{id}", image.UpdateHandler).Methods("POST")
+	r.HandleFunc("/api/image/delete/{id}", image.DeleteHandler).Methods("GET")
+	r.HandleFunc("/api/image/return/{id}", image.ReturnImage).Methods("GET")
+	r.HandleFunc("/api/image/return_link/{id}", image.ReturnImageLink).Methods("GET")
+	r.HandleFunc("/api/image/return_links/{ids}", image.ReturnImageLinks).Methods("GET")
 
 	/* Categories */
 	r.HandleFunc("/api/categories", category.GetHandler).Methods("GET")
@@ -56,5 +60,4 @@ func main() {
 	r.HandleFunc("/api/sub_category/delete/{id}", subCategory.Delete).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":3348", r))
-
 }

@@ -21,6 +21,11 @@ func CreateDatabase() (*sql.DB, error) {
 	return db, err
 }
 
+//EnableCors - enables Cross-Origin Resource Sharing
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+   }
+
 //CheckIDWithRequest - checks whether id is valid with request
 func CheckIDWithRequest(r *http.Request) (int, error) {
 	params := mux.Vars(r)
@@ -32,6 +37,7 @@ func CheckIDWithRequest(r *http.Request) (int, error) {
 	}
 	return id, err
 }
+
 
 //CheckID - checks whether id is valid
 func CheckID(id *int) error {
@@ -88,4 +94,18 @@ func ScanItems(result *sql.Rows) []models.Item {
 		items = append(items, item)
 	}
 	return items
+}
+
+//ScanImage - scans result for image 
+func ScanImage(result *sql.Rows) []models.Image{
+	var image models.Image
+	var images []models.Image
+	for result.Next(){
+		err := result.Scan(&image.ItemID, &image.Path)
+		if err != nil {
+			panic(err.Error())
+		}
+		images = append(images, image)
+	}
+	return images
 }

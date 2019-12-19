@@ -1,42 +1,34 @@
 package image
 
 import (
+	"database/sql"
 	"fmt"
-	"io/ioutil"
 	"net/http"
+
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 )
 
-//Create - saves an image of item
-func Create(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("File Upload Endpoint Hit")
-
-	r.ParseMultipartForm(10 << 20)
-	
-	file, handler, err := r.FormFile("image")
+//CreateHandler - handles saving an image of item
+func CreateHandler(w http.ResponseWriter, r *http.Request) {
+	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
-		fmt.Println("Error Retrieving the File")
-		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
-	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-
-	tempFile, err := ioutil.TempFile("./src/assets", "upload-*.png")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(tempFile.Name())
-	defer tempFile.Close()
-
-	fileBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		fmt.Println(err)
-	}
-	tempFile.Write(fileBytes)
-
-
+	fmt.Println(itemID)
 	
-	fmt.Fprintf(w, "Successfully Uploaded File\n")
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	path := Upload(r)
+
+	Create(itemID, path, db)
+
+}
+
+//Create - saves an image of item
+func Create(itemID int , path string, db *sql.DB) {
+	query := fmt.Sprintf(`INSERT INTO image(item_id, path) VALUES(%v, "%v");`, itemID, path)
+	db.Exec(query)
 }
