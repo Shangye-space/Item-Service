@@ -1,34 +1,34 @@
 package item
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
-	"github.com/gorilla/mux"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 )
 
-// Delete - removes item from db
-func Delete(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-
-	itemID, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if itemID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
-	}
-
-	db, err := database.CreateDatabase()
+// DeleteHandler - Handles removing item from db
+func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	query := fmt.Sprintf("DELETE FROM item WHERE id = %v;", strconv.Itoa(itemID))
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 
-	db.Exec(query)
+	Delete(itemID, db)
+
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+}
 
+// Delete - removes item from db
+func Delete(itemID int, db *sql.DB) {
+	query := fmt.Sprintf("DELETE FROM item WHERE id = %v;", strconv.Itoa(itemID))
+	db.Exec(query)
 }

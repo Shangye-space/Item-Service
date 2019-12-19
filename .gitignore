@@ -240,4 +240,4 @@ coverage/*
 !coverage/coverage.sh
 !coverage/coverage.bat
 
-
+src/assets

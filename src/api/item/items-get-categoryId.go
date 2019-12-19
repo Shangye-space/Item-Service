@@ -1,87 +1,46 @@
 package item
 
-// import (
-// 	"encoding/json"
-// 	"fmt"
-// 	"io/ioutil"
-// 	"log"
-// 	"net/http"
-// 	"strconv"
-// 	"strings"
+import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
 
-// 	database "github.com/Shangye-space/Item-Service/src/db"
-// 	"github.com/Shangye-space/Item-Service/src/models"
-// 	"github.com/gorilla/mux"
-// )
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
+	"github.com/Shangye-space/Item-Service/src/models"
+)
 
-// // GetByCategoryID - Gets Item by Category ID
-// func GetByCategoryID(w http.ResponseWriter, r *http.Request) {
-// 	params := mux.Vars(r)
+// GetByCategoryIDHandler - Handles getting Items by Category ID
+func GetByCategoryIDHandler(w http.ResponseWriter, r *http.Request) {
+	categoryID, err := helpers.CheckIDWithRequest(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 
-// 	categoryID, err := strconv.Atoi(params["id"])
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusBadRequest)
-// 	} else if categoryID == 0 {
-// 		http.Error(w, "can't be 0", http.StatusBadRequest)
-// 	}
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		log.Fatal("Connection to DB has failed.")
+	}
 
-// 	db, err := database.CreateDatabase()
-// 	if err != nil {
-// 		log.Fatal("Connection to DB has failed.")
-// 	}
+	items := GetByCategoryID(categoryID, db)
 
-// 	query := string(fmt.Sprintf("http://localhost:3348/api/sub_categories/category/%v", strconv.Itoa(categoryID)))
-// 	response, err := http.Get(query)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(items)
+}
 
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
+// GetByCategoryID - Gets Item by Category ID
+func GetByCategoryID(categoryID int, db *sql.DB) []models.Item {
 
-// 	defer response.Body.Close()
+	query := string(fmt.Sprintf("SELECT item.`id`, item.`name`, item.`price`, item.`sub_category_id`, item.`in_sale`, item.`added_time`, item.`last_updated`, item.`removed_time` FROM item INNER JOIN sub_category ON item.`sub_category_id` = sub_category.`id` INNER JOIN category ON sub_category.`category_id` = category.`id` WHERE category_id = %v;", categoryID))
+	result, err := db.Query(query)
 
-// 	responseData, err := ioutil.ReadAll(response.Body)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	if err != nil {
+		panic(err.Error())
+	}
 
-// 	var subCategory []models.SubCategory
-
-// 	json.Unmarshal(responseData, &subCategory)
-// 	fmt.Printf("Subcategorys: %+v", subCategory)
-
-// 	var ids []string
-// 	for _, element := range subCategory {
-// 		ids = append(ids, strconv.Itoa(*element.ID))
-// 		fmt.Print(777)
-// 	}
-
-// 	decoder := json.NewDecoder(response.Body)
-// 	err1 := decoder.Decode(&subCategory)
-// 	if err1 != nil {
-// 		panic(err)
-// 	}
-
-// 	query = string(fmt.Sprintf("SELECT * FROM item WHERE sub_category_id IN (%v)", strings.Join(ids, ", ")))
-// 	result, err := db.Query(query)
-
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-
-// 	var item models.Item
-// 	var items []models.Item
-
-// 	for result.Next() {
-// 		err := result.Scan(&item.ID, &item.Name, &item.Price, &item.SubCategoryID, &item.InSale, &item.AddedTime, &item.LastUpdated, &item.RemovedTime)
-// 		if err != nil {
-// 			panic(err.Error())
-// 		}
-// 		items = append(items, item)
-// 	}
-
-// 	defer result.Close()
-
-// 	w.WriteHeader(http.StatusOK)
-// 	w.Header().Set("Content-Type", "application/json")
-// 	json.NewEncoder(w).Encode(items)
-// }
+	items := helpers.ScanItems(result)
+	defer result.Close()
+	return items
+}

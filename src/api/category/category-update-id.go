@@ -1,4 +1,4 @@
-package subcategory
+package category
 
 import (
 	"database/sql"
@@ -8,32 +8,34 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Shangye-space/Item-Service/src/api/helpers"
+	"strconv"
+
+	helpers "github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-//UpdateHandler sub categories
+//UpdateHandler categories
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 
-	subCategoryID, err := helpers.CheckIDWithRequest(r)
+	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	//Declare a new SubCategory struct
-	var subCategory models.SubCategory
+	//Declare a new Category struct.
+	var category models.Category
 
 	decoder := json.NewDecoder(r.Body)
 
-	err1 := decoder.Decode(&subCategory)
+	err1 := decoder.Decode(&category)
 	if err1 != nil {
 		panic(err)
 	}
 
 	var setProp []string
 
-	if helpers.CheckString(subCategory.Name) == nil {
-		prop := fmt.Sprintf(`name = "%v"`, *subCategory.Name)
+	if helpers.CheckString(category.Name) == nil {
+		prop := fmt.Sprintf(`name = "%v"`, *category.Name)
 		setProp = append(setProp, prop)
 	}
 
@@ -45,15 +47,15 @@ func UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	Update(subCategoryID, db, setProp)
+	Update(categoryID, db, setProp)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 
 }
 
-//Update - sub categories update
-func Update(subCategoryID int, db *sql.DB, setProp []string) {
-	query := string(fmt.Sprintf("UPDATE sub_category SET %v WHERE id = %v;", strings.Join(setProp, ", "), subCategoryID))
+//Update - updates category
+func Update(categoryID int, db *sql.DB, setProp []string) {
+	query := string(fmt.Sprintf("UPDATE category SET %v WHERE id = %v;", strings.Join(setProp, ", "), strconv.Itoa(categoryID)))
 	db.Exec(query)
 }

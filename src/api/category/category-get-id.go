@@ -1,54 +1,47 @@
 package category
 
 import (
+	"database/sql"
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	helpers "github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
-	"github.com/gorilla/mux"
 )
 
-// GetByID - Gets Category by ID
-func GetByID(w http.ResponseWriter, r *http.Request) {
+// GetByIDHandler - Handles get method for Category by ID
+func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 
-	params := mux.Vars(r)
-
-	itemID, err := strconv.Atoi(params["id"])
+	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else if itemID == 0 {
-		http.Error(w, "can't be 0", http.StatusBadRequest)
 	}
 
-	db, err := database.CreateDatabase()
+	db, err := helpers.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	result, err := db.Query(`SELECT * FROM category WHERE id = %v LIMIT 1`)
+	category := GetByID(categoryID, db)
 
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(category)
+
+}
+
+//GetByID - Gets unique category by ID
+func GetByID(categoryID int, db *sql.DB) []models.Category {
+	query := string(fmt.Sprintf("SELECT * FROM category WHERE id = %v LIMIT 1", strconv.Itoa(categoryID)))
+	result, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	var category models.Category
-	var categories []models.Category
-
-	for result.Next() {
-		err := result.Scan(&category.ID, &category.Name, &category.AddedTime, &category.LastUpdated, &category.RemovedTime)
-		if err != nil {
-			panic(err.Error())
-		}
-		categories = append(categories, category)
-	}
-
+	category := helpers.ScanCategories(result)
 	defer result.Close()
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(categories)
-
+	return category
 }
