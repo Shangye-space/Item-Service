@@ -1,43 +1,48 @@
 package subcategory
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-//Create - creates sub categories in db
-func Create(w http.ResponseWriter, r *http.Request) {
-	db, err := database.CreateDatabase()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
+//CreateHandler - handles creating sub category
+func CreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	var subCategory models.SubCategory
 
 	decoder := json.NewDecoder(r.Body)
 
-	err1 := decoder.Decode(&subCategory)
-	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+	err := decoder.Decode(&subCategory)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if subCategory.Name == nil || len(*subCategory.Name) <= 0 {
-		http.Error(w, "Name is wrong", http.StatusBadRequest)
+	err = helpers.CheckString(subCategory.Name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if subCategory.CategoryID == nil || *subCategory.CategoryID <= 0 {
-		http.Error(w, "CategoryID is wrong", http.StatusBadRequest)
+	err = helpers.CheckID(subCategory.CategoryID)
+
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
+	Create(subCategory, db)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+}
+
+// Create - creates sub categories in db
+func Create(subCategory models.SubCategory, db *sql.DB) {
 	query := fmt.Sprintf(`INSERT INTO sub_category(name, category_id)
 	VALUES("%v", %v);`, *subCategory.Name, *subCategory.CategoryID)
 
 	db.Exec(query)
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
 }

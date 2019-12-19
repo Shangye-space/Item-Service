@@ -1,4 +1,4 @@
-package subcategory
+package category
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-// GetHandler - Handles GET method for sub categories
+// GetHandler - Handles GET method for categories
 func GetHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := helpers.CreateDatabase()
@@ -17,24 +17,25 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	subCategories := Get(db)
+	categories := Get(db)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(subCategories)
+	json.NewEncoder(w).Encode(categories)
 
 }
 
-//Get - gets sub sub categories
-func Get(db *sql.DB) []models.SubCategory {
-	result, err := db.Query(`SELECT * FROM sub_category`)
+// Get - Gets Categories
+func Get(db *sql.DB) []models.Category {
 
+	result, err := db.Query(`SELECT * FROM category`)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	subCategories := helpers.ScanSubCategories(result)
+	categories := helpers.ScanCategories(result)
 	defer result.Close()
 
-	return subCategories
+	return categories
+
 }

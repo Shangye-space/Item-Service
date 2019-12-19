@@ -1,4 +1,4 @@
-package item
+package category
 
 import (
 	"database/sql"
@@ -11,9 +11,10 @@ import (
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-// GetByIDHandler - Handles get method for Item by ID
+// GetByIDHandler - Handles get method for Category by ID
 func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-	itemID, err := helpers.CheckIDWithRequest(r)
+
+	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -23,22 +24,24 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	item := GetByID(itemID, db)
+	category := GetByID(categoryID, db)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(item)
+	json.NewEncoder(w).Encode(category)
+
 }
 
-//GetByID - Gets unique item by ID
-func GetByID(itemID int, db *sql.DB) []models.Item {
-	query := string(fmt.Sprintf("SELECT * FROM item WHERE id = %v LIMIT 1", strconv.Itoa(itemID)))
+//GetByID - Gets unique category by ID
+func GetByID(categoryID int, db *sql.DB) []models.Category {
+	query := string(fmt.Sprintf("SELECT * FROM category WHERE id = %v LIMIT 1", strconv.Itoa(categoryID)))
 	result, err := db.Query(query)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	item := helpers.ScanItems(result)
+	category := helpers.ScanCategories(result)
 	defer result.Close()
-	return item
+
+	return category
 }

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -12,31 +11,31 @@ import (
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-// GetSubCategoryByCategoryIDHandler - handles get method for subCategory by CategoryID
-func GetSubCategoryByCategoryIDHandler(w http.ResponseWriter, r *http.Request) {
+// GetByIDHandler - Handles get method for subCategory by ID
+func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 
-	categoryID, err := helpers.CheckIDWithRequest(r)
+	subCategoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	db, err := helpers.CreateDatabase()
 	if err != nil {
-		log.Fatal("Connection to DB has failed.")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	subCategory := GetSubCategoryIDByCategoryID(categoryID, db)
+	subCategory := GetByID(subCategoryID, db)
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(subCategory)
+
 }
 
-// GetSubCategoryIDByCategoryID - Gets subcategory IDs by category ID
-func GetSubCategoryIDByCategoryID(categoryID int, db *sql.DB) []models.SubCategory {
-	query := string(fmt.Sprintf("SELECT * FROM sub_category WHERE category_id = %v", strconv.Itoa(categoryID)))
+//GetByID - Gets unique sub category by ID
+func GetByID(subCategoryID int, db *sql.DB) []models.SubCategory {
+	query := string(fmt.Sprintf("SELECT * FROM sub_category WHERE id = %v LIMIT 1", strconv.Itoa(subCategoryID)))
 	result, err := db.Query(query)
-
 	if err != nil {
 		panic(err.Error())
 	}
@@ -45,5 +44,4 @@ func GetSubCategoryIDByCategoryID(categoryID int, db *sql.DB) []models.SubCatego
 	defer result.Close()
 
 	return subCategory
-
 }

@@ -1,57 +1,55 @@
 package item
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	database "github.com/Shangye-space/Item-Service/src/db"
+	"github.com/Shangye-space/Item-Service/src/api/helpers"
 	"github.com/Shangye-space/Item-Service/src/models"
 )
 
-// Create - creates item in db
-func Create(w http.ResponseWriter, r *http.Request) {
-	db, err := database.CreateDatabase()
+// CreateHandler - handles creating item
+func CreateHandler(w http.ResponseWriter, r *http.Request) {
+	var item models.Item
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	// Declare a new Item struct.
-	var item models.Item
-
-	decoder := json.NewDecoder(r.Body)
-
-	err1 := decoder.Decode(&item)
-	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+	err = helpers.CheckString(item.Name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if item.Name == nil || len(*item.Name) <= 0 {
-		http.Error(w, "Name is wrong", http.StatusBadRequest)
+	err = helpers.CheckNumber(item.Price)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	var inSale int
-	if item.InSale == nil {
-		http.Error(w, "InSale is wrong", http.StatusBadRequest)
-	} else {
-		if *item.InSale == true {
-			inSale = 1
-		} else {
-			inSale = 0
-		}
+	inSale, err := helpers.CheckBool(item.InSale)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	if item.SubCategoryID == nil || *item.SubCategoryID <= 0 {
-		http.Error(w, "SubCategoryID is wrong", http.StatusBadRequest)
+	err = helpers.CheckID(item.SubCategoryID)
+
+	db, err := helpers.CreateDatabase()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	query := fmt.Sprintf(`
-	INSERT INTO item(sub_category_id, name, in_sale)
-	VALUES(%v, "%v", %v);`, *item.SubCategoryID, *item.Name, inSale)
-
-	db.Exec(query)
-
+	Create(item, inSale, db)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
+}
 
+// Create - creates item
+func Create(item models.Item, inSale int, db *sql.DB) {
+	query := fmt.Sprintf(`
+	INSERT INTO item(name, price, sub_category_id, in_sale)
+	VALUES("%v", %v, %v, %v);`, *item.Name, *item.Price, *item.SubCategoryID, inSale)
+	db.Exec(query)
 }
