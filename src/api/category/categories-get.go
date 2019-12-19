@@ -11,7 +11,7 @@ import (
 
 // GetHandler - Handles GET method for categories
 func GetHandler(w http.ResponseWriter, r *http.Request) {
-
+	helpers.EnableCors(&w)
 	db, err := helpers.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

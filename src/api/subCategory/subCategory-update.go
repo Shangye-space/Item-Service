@@ -14,7 +14,7 @@ import (
 
 //UpdateHandler sub categories
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
-
+	helpers.EnableCors(&w)
 	subCategoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

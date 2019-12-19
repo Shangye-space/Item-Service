@@ -13,7 +13,7 @@ import (
 
 // GetByIDHandler - Handles get method for Category by ID
 func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-
+	helpers.EnableCors(&w)
 	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

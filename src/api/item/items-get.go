@@ -11,6 +11,7 @@ import (
 
 // GetHandler - Handles GET method for items
 func GetHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 
 	db, err := helpers.CreateDatabase()
 	if err != nil {

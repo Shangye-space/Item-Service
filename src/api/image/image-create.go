@@ -10,6 +10,7 @@ import (
 
 //CreateHandler - handles saving an image of item
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

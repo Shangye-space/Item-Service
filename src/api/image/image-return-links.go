@@ -12,7 +12,7 @@ import (
 
 //ReturnImageLinks - returns links to images for an array of itemIDs
 func ReturnImageLinks(w http.ResponseWriter, r *http.Request) {
-
+	helpers.EnableCors(&w)
 	params := mux.Vars(r)
 	k := strings.Replace(params["ids"], " ", "", -1)
 	s := strings.Split(k, ",")

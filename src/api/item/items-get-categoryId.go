@@ -13,6 +13,7 @@ import (
 
 // GetByCategoryIDHandler - Handles getting Items by Category ID
 func GetByCategoryIDHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(&w)
 	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
