@@ -27,12 +27,14 @@ func main() {
 	r.HandleFunc("/api/item/update/{id}", item.UpdateHandler).Methods("POST")
 	r.HandleFunc("/api/item/delete/{id}", item.DeleteHandler).Methods("GET")
 	r.HandleFunc("/api/items/count", item.GetCountHandler).Methods("GET")
+	r.HandleFunc("/api/items/{ids}", item.GetItemsByIDs).Methods("GET")
 
 	/* Item info */
 	r.HandleFunc("/api/item_info/{id}", iteminfo.GetByIDHandler).Methods("GET")
 	r.HandleFunc("/api/item_info/create/{id}", iteminfo.CreateByIDHandler).Methods("POST")
 	r.HandleFunc("/api/item_info/update/{id}", iteminfo.UpdateByIDHandler).Methods("POST")
 	r.HandleFunc("/api/item_info/delete/{id}", iteminfo.DeleteByIDHandler).Methods("GET")
+	r.HandleFunc("/api/item_infos/{ids}", iteminfo.GetItemInfoByIDs).Methods("GET")
 
 	/* Image */
 	r.HandleFunc("/api/image/{id}", image.GetByIDHandler).Methods("GET")
