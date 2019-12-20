@@ -33,10 +33,4 @@ func TestGetcategoryID(t *testing.T) {
 			t.Errorf("Result was nil")
 		}
 	})
-
-	// t.Run("response.body content", func(t *testing.T){
-	// 	if response := rr.Body.String(); response == nil {
-	// 		t.Errorf("Result was nil")
-	// 	}
-	// })
 }

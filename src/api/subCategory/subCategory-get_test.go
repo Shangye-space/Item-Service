@@ -1,4 +1,4 @@
-package cubcategory_test
+package subcategory_test
 
 import (
 	"net/http"
