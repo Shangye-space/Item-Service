@@ -6,16 +6,19 @@ import (
 	"testing"
 
 	"github.com/Shangye-space/Item-Service/src/api/item"
+	"github.com/gorilla/mux"
 )
 
-func TestGet(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api/items", nil)
+func TestGetcategoryID(t *testing.T) {
+	req, err := http.NewRequest("GET", "/api/items/category/", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	req = mux.SetURLVars(req, map[string]string{"id": "1"})
+
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(item.GetHandler)
+	handler := http.HandlerFunc(item.GetByCategoryIDHandler)
 
 	handler.ServeHTTP(rr, req)
 
@@ -25,9 +28,15 @@ func TestGet(t *testing.T) {
 		}
 	})
 
-	t.Run("response.body", func(t *testing.T) {
+	t.Run("response.body not null", func(t *testing.T) {
 		if response := rr.Result().Body; response == nil {
 			t.Errorf("Result was nil")
 		}
 	})
+
+	// t.Run("response.body content", func(t *testing.T){
+	// 	if response := rr.Body.String(); response == nil {
+	// 		t.Errorf("Result was nil")
+	// 	}
+	// })
 }

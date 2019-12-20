@@ -1,21 +1,21 @@
-package item_test
+package category_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Shangye-space/Item-Service/src/api/item"
+	"github.com/Shangye-space/Item-Service/src/api/category"
 )
 
-func TestGet(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api/items", nil)
+func TestCategoriesGet(t *testing.T) {
+	req, err := http.NewRequest("GET", "/api/categories", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(item.GetHandler)
+	handler := http.HandlerFunc(category.GetHandler)
 
 	handler.ServeHTTP(rr, req)
 
@@ -30,4 +30,5 @@ func TestGet(t *testing.T) {
 			t.Errorf("Result was nil")
 		}
 	})
+
 }

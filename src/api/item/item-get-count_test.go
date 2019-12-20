@@ -3,19 +3,20 @@ package item_test
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/Shangye-space/Item-Service/src/api/item"
 )
 
-func TestGet(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api/items", nil)
+func TestGetCount(t *testing.T) {
+	req, err := http.NewRequest("GET", "/api/items/count", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(item.GetHandler)
+	handler := http.HandlerFunc(item.GetCountHandler)
 
 	handler.ServeHTTP(rr, req)
 
@@ -25,9 +26,16 @@ func TestGet(t *testing.T) {
 		}
 	})
 
-	t.Run("response.body", func(t *testing.T) {
+	t.Run("response.body not null", func(t *testing.T) {
 		if response := rr.Result().Body; response == nil {
 			t.Errorf("Result was nil")
+		}
+	})
+
+	t.Run("response.body count", func(t *testing.T) {
+		want := "49"
+		if response := rr.Body.String(); strings.TrimSpace(response) != want {
+			t.Errorf("Handler returned wrong count: got %v want %v", response, want)
 		}
 	})
 }

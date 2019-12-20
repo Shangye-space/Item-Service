@@ -32,6 +32,7 @@ func Get(db *sql.DB) []models.Item {
 		panic(err.Error())
 	}
 
+	db.Close()
 	items := helpers.ScanItems(result)
 	defer result.Close()
 	return items

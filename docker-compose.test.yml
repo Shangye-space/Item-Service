@@ -5,7 +5,7 @@ services:
     restart: always
     network_mode: bridge
     environment:
-      MYSQL_DATABASE: 'db'
+      MYSQL_DATABASE: 'testDB'
       MYSQL_USER: 'root'
       MYSQL_PASSWORD: 'root'
       MYSQL_ROOT_PASSWORD: 'root'
