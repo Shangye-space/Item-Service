@@ -33,7 +33,7 @@ func TestGetCount(t *testing.T) {
 	})
 
 	t.Run("response.body count", func(t *testing.T) {
-		want := "49"
+		want := "53"
 		if response := rr.Body.String(); strings.TrimSpace(response) != want {
 			t.Errorf("Handler returned wrong count: got %v want %v", response, want)
 		}
