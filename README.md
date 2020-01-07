@@ -11,6 +11,13 @@
     <li><h5>docker-compose up</h5></li>
 </ul>
 
+## How to test
+<p>run following command:</p>
+<ul>
+    <li><h5>./run_tests.bat <i>for windows</h5></i></li>
+    <li><h5>./run_tests.sh <i>for mac/linux</h5></i></li>
+</ul>
+
 ### Description
 This is one of microservices for "Shangye.space" project. 
 
