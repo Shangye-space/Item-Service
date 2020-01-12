@@ -15,6 +15,7 @@ import (
 
 // UpdateByIDHandler - Handles item info update function
 func UpdateByIDHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(w)
 
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 
 //ReturnImage - returns image
 func ReturnImage(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(w)
 
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {

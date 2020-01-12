@@ -10,6 +10,8 @@ import (
 
 // GetCountHandler - Handles GET method for item
 func GetCountHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(w)
+
 
 	db, err := helpers.CreateDatabase()
 	if err != nil {

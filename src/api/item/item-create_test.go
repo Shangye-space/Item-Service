@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func TestCreateRightData(t *testing.T) {
+func TestItemCreateRightData(t *testing.T) {
 	expectedName := "TestItem"
 	expectedPrice := 155.00
 	expectedSubCategoryID := 5
@@ -44,13 +44,12 @@ func TestCreateRightData(t *testing.T) {
 	})
 }
 
-func TestCreateWrongName(t *testing.T) {
-	var expectedName string
+func TestItemCreateWrongName(t *testing.T) {
 	expectedPrice := 155.00
 	expectedSubCategoryID := 5
 	expectedInSale := true
 
-	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID": %v,"InSale":%v}`, expectedName, expectedPrice, expectedSubCategoryID, expectedInSale)
+	b := fmt.Sprintf(`{"Name":5,"Price":%v,"SubCategoryID": %v,"InSale":%v}`, expectedPrice, expectedSubCategoryID, expectedInSale)
 
 	req, err := http.NewRequest("POST", "/api/item/create", strings.NewReader(b))
 	if err != nil {
@@ -75,13 +74,12 @@ func TestCreateWrongName(t *testing.T) {
 	})
 }
 
-func TestCreateWrongPrice(t *testing.T) {
+func TestItemCreateWrongPrice(t *testing.T) {
 	expectedName := 555
-	var expectedPrice int
 	expectedSubCategoryID := 5
 	expectedInSale := true
 
-	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID": %v,"InSale":%v}`, expectedName, expectedPrice, expectedSubCategoryID, expectedInSale)
+	b := fmt.Sprintf(`{"Name":"%v","Price":-55,"SubCategoryID": %v,"InSale":%v}`, expectedName, expectedSubCategoryID, expectedInSale)
 
 	req, err := http.NewRequest("POST", "/api/item/create", strings.NewReader(b))
 	if err != nil {
@@ -105,13 +103,12 @@ func TestCreateWrongPrice(t *testing.T) {
 		}
 	})
 }
-func TestCreateWrongSubCategoryID(t *testing.T) {
+func TestItemCreateWrongSubCategoryID(t *testing.T) {
 	expectedName := 555
 	expectedPrice := 155.00
-	var expectedSubCategoryID int
 	expectedInSale := true
 
-	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID": %v,"InSale":%v}`, expectedName, expectedPrice, expectedSubCategoryID, expectedInSale)
+	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID":-55,"InSale":%v}`, expectedName, expectedPrice, expectedInSale)
 
 	req, err := http.NewRequest("POST", "/api/item/create", strings.NewReader(b))
 	if err != nil {
@@ -136,13 +133,12 @@ func TestCreateWrongSubCategoryID(t *testing.T) {
 	})
 }
 
-func TestCreateWrongInSale(t *testing.T) {
+func TestItemCreateWrongInSale(t *testing.T) {
 	expectedName := 555
 	expectedPrice := 155.00
 	expectedSubCategoryID := 5
-	var expectedInSale bool
 
-	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID": %v,"InSale":%v}`, expectedName, expectedPrice, expectedSubCategoryID, expectedInSale)
+	b := fmt.Sprintf(`{"Name":"%v","Price":%v,"SubCategoryID": %v,"InSale":"rdfe"}`, expectedName, expectedPrice, expectedSubCategoryID)
 
 	req, err := http.NewRequest("POST", "/api/item/create", strings.NewReader(b))
 	if err != nil {
@@ -166,4 +162,3 @@ func TestCreateWrongInSale(t *testing.T) {
 		}
 	})
 }
-

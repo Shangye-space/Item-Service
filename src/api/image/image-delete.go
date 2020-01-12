@@ -11,6 +11,8 @@ import (
 
 // DeleteHandler - Handles removing item from db
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+	helpers.EnableCors(w)
+
 	imageID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
