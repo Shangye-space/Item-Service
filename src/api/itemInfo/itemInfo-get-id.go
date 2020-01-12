@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -23,7 +22,7 @@ func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := helpers.CreateDatabase()
 	if err != nil {
-		log.Fatal("Conection to DB has failed")
+		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	itemInfo := GetByID(itemID, db)
