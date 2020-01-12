@@ -22,8 +22,8 @@ func CreateDatabase() (*sql.DB, error) {
 }
 
 //EnableCors - enables Cross-Origin Resource Sharing
-func EnableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+func EnableCors(w http.ResponseWriter) {
+	(w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 //CheckIDWithRequest - checks whether id is valid with request

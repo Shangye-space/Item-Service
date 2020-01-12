@@ -8,6 +8,7 @@ import (
 
 //Upload - uploads images
 func Upload(r *http.Request) string {
+
 	r.ParseMultipartForm(10 << 20)
 
 	file, handler, err := r.FormFile("image")

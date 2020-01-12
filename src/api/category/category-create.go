@@ -12,7 +12,8 @@ import (
 
 //CreateHandler - handles creating category
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	var category models.Category
 
 	decoder := json.NewDecoder(r.Body)

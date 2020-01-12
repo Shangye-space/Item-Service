@@ -10,7 +10,7 @@ func TestCheckIDRight(t *testing.T) {
 	id := 5
 	err := helpers.CheckID(&id)
 	if err != nil {
-		t.Error("ID is not valid")
+		t.Error("Accepatble ID is not valid")
 	}
 
 }
@@ -19,7 +19,7 @@ func TestCheckIDWrong(t *testing.T) {
 	var id int
 	err := helpers.CheckID(&id)
 	if err == nil {
-		t.Error("ID is not valid")
+		t.Error("Unacceptable ID is valid")
 	}
 
 }

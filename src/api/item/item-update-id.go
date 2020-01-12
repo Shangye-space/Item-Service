@@ -15,7 +15,8 @@ import (
 
 // UpdateHandler - Handles item update function
 func UpdateHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

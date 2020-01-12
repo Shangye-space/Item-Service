@@ -12,7 +12,8 @@ import (
 
 //DeleteByIDHandler - Handles removing item info from db
 func DeleteByIDHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

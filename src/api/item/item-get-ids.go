@@ -13,7 +13,7 @@ import (
 
 //GetItemsByIDs - get item info by id
 func GetItemsByIDs(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
 	params := mux.Vars(r)
 	k := strings.Replace(params["ids"], " ", "", -1)
 	s := strings.Split(k, ",")

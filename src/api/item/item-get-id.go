@@ -13,7 +13,8 @@ import (
 
 // GetByIDHandler - Handles get method for Item by ID
 func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -39,6 +40,7 @@ func GetByID(itemID int, db *sql.DB) []models.Item {
 		panic(err.Error())
 	}
 
+	defer db.Close()
 	item := helpers.ScanItems(result)
 	defer result.Close()
 	return item

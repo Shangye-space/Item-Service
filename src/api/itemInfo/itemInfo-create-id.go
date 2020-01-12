@@ -12,7 +12,8 @@ import (
 
 // CreateByIDHandler - handles creating item info
 func CreateByIDHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	var itemInfo models.ItemInfo
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&itemInfo)

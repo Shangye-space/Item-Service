@@ -13,7 +13,8 @@ import (
 
 // GetByIDHandler - Handles get method for Item info by ID
 func GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	itemID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

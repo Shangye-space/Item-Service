@@ -14,7 +14,8 @@ import (
 
 // GetSubCategoryByCategoryIDHandler - handles get method for subCategory by CategoryID
 func GetSubCategoryByCategoryIDHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	categoryID, err := helpers.CheckIDWithRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

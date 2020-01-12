@@ -12,7 +12,8 @@ import (
 
 //CreateHandler - handles creating sub category
 func CreateHandler(w http.ResponseWriter, r *http.Request) {
-	helpers.EnableCors(&w)
+	helpers.EnableCors(w)
+
 	var subCategory models.SubCategory
 
 	decoder := json.NewDecoder(r.Body)
