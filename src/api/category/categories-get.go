@@ -36,6 +36,7 @@ func Get(db *sql.DB) []models.Category {
 
 	categories := helpers.ScanCategories(result)
 	defer result.Close()
+	defer db.Close()
 
 	return categories
 

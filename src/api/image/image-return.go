@@ -1,7 +1,6 @@
 package image
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -18,8 +17,6 @@ func ReturnImage(w http.ResponseWriter, r *http.Request) {
 		panic("error with id")
 	}
 
-	fmt.Println(itemID)
-
 	db, err := helpers.CreateDatabase()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -33,6 +30,7 @@ func ReturnImage(w http.ResponseWriter, r *http.Request) {
 	path := "./" + *imageInstance[0].Path
 	img := ReadImageFromFile(path)
 
+	defer db.Close()
 	w.Header().Set("Content-type", "image/png")
 	w.Write(img)
 }
